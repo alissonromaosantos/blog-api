@@ -1,0 +1,566 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-09-30T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v10.0.0",
+  "resources": [
+    {
+      "_id": "wrk_blog_api",
+      "_type": "workspace",
+      "name": "Blog API",
+      "description": "Requests for the Blog API. Set the active environment before sending requests.",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_blog_api_base",
+      "_type": "environment",
+      "parentId": "wrk_blog_api",
+      "name": "Local Docker",
+      "data": {
+        "base_url": "http://localhost:3000",
+        "auth_token": "",
+        "other_token": "",
+        "post_id": "550e8400-e29b-41d4-a716-446655440002",
+        "signup_email": "insomnia-author@example.com",
+        "other_email": "insomnia-other@example.com",
+        "password": "secret123"
+      },
+      "dataPropertyOrder": {
+        "base_url": 0,
+        "auth_token": 1,
+        "other_token": 2,
+        "post_id": 3,
+        "signup_email": 4,
+        "other_email": 5,
+        "password": 6
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1
+    },
+    {
+      "_id": "grp_health_auth",
+      "_type": "request_group",
+      "parentId": "wrk_blog_api",
+      "name": "Health and authentication",
+      "description": "Signup/signin requests return a session token. Copy it into the matching environment token variable.",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": 100
+    },
+    {
+      "_id": "grp_public_posts",
+      "_type": "request_group",
+      "parentId": "wrk_blog_api",
+      "name": "Public posts",
+      "description": "Public list and get endpoints, including validation and not-found cases.",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": 200
+    },
+    {
+      "_id": "grp_protected_posts",
+      "_type": "request_group",
+      "parentId": "wrk_blog_api",
+      "name": "Protected post operations",
+      "description": "Requires auth_token or other_token as specified in each request.",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": 300
+    },
+    {
+      "_id": "req_health",
+      "_type": "request",
+      "parentId": "grp_health_auth",
+      "name": "Health check (200)",
+      "description": "Expected: 200 { \"status\": \"ok\" }.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/health",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 100,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingMaxRedirects": 5
+    },
+    {
+      "_id": "req_signup_author",
+      "_type": "request",
+      "parentId": "grp_health_auth",
+      "name": "Sign up author (201)",
+      "description": "After success, copy response.token to the active environment variable auth_token. Change signup_email before repeating signup.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/auth/signup",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Insomnia Author\",\n  \"email\": \"{{ _.signup_email }}\",\n  \"password\": \"{{ _.password }}\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": 200,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingMaxRedirects": 5
+    },
+    {
+      "_id": "req_signin_author",
+      "_type": "request",
+      "parentId": "grp_health_auth",
+      "name": "Sign in author (200)",
+      "description": "After success, copy response.token to auth_token. Signin creates a new session token, replacing the previously stored session for this user.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/auth/signin",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"{{ _.signup_email }}\",\n  \"password\": \"{{ _.password }}\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": 300,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingMaxRedirects": 5
+    },
+    {
+      "_id": "req_signup_duplicate",
+      "_type": "request",
+      "parentId": "grp_health_auth",
+      "name": "Sign up duplicate email (409)",
+      "description": "Run after Sign up author. Expected: CONFLICT / Email already registered.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/auth/signup",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Duplicate Author\",\n  \"email\": \"{{ _.signup_email }}\",\n  \"password\": \"{{ _.password }}\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": 400,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingMaxRedirects": 5
+    },
+    {
+      "_id": "req_signin_invalid",
+      "_type": "request",
+      "parentId": "grp_health_auth",
+      "name": "Sign in wrong password (401)",
+      "description": "Expected: UNAUTHORIZED / Invalid email or password.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/auth/signin",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"{{ _.signup_email }}\",\n  \"password\": \"wrong-password\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": 500,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingMaxRedirects": 5
+    },
+    {
+      "_id": "req_signup_other",
+      "_type": "request",
+      "parentId": "grp_health_auth",
+      "name": "Sign up second user (201)",
+      "description": "Needed for ownership checks. Copy response.token to other_token in the active environment.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/auth/signup",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Other Author\",\n  \"email\": \"{{ _.other_email }}\",\n  \"password\": \"{{ _.password }}\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": 600,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingMaxRedirects": 5
+    },
+    {
+      "_id": "req_list_posts",
+      "_type": "request",
+      "parentId": "grp_public_posts",
+      "name": "List posts (200)",
+      "description": "Optional page defaults to 1. Expected response includes data and pagination meta.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/posts?page=1",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 100,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingMaxRedirects": 5
+    },
+    {
+      "_id": "req_list_posts_invalid_page",
+      "_type": "request",
+      "parentId": "grp_public_posts",
+      "name": "List posts invalid page (400)",
+      "description": "Expected: VALIDATION_ERROR for page=0.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/posts?page=0",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 200,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingMaxRedirects": 5
+    },
+    {
+      "_id": "req_get_post",
+      "_type": "request",
+      "parentId": "grp_public_posts",
+      "name": "Get post by ID (200)",
+      "description": "Set post_id to an existing UUID from the Create post response before sending.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/posts/{{ _.post_id }}",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 300,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingMaxRedirects": 5
+    },
+    {
+      "_id": "req_get_post_invalid_id",
+      "_type": "request",
+      "parentId": "grp_public_posts",
+      "name": "Get post invalid UUID (400)",
+      "description": "Expected: VALIDATION_ERROR. Replace post_id temporarily with 'not-a-uuid' in the environment to try this request.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/posts/not-a-uuid",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 400,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingMaxRedirects": 5
+    },
+    {
+      "_id": "req_create_post",
+      "_type": "request",
+      "parentId": "grp_protected_posts",
+      "name": "Create post (201)",
+      "description": "Requires auth_token. Copy response.id to post_id in the active environment.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/posts",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Insomnia test post\",\n  \"content\": \"A post created while testing the Blog API from Insomnia.\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.auth_token }}"
+      },
+      "metaSortKey": 100,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingMaxRedirects": 5
+    },
+    {
+      "_id": "req_create_post_unauthorized",
+      "_type": "request",
+      "parentId": "grp_protected_posts",
+      "name": "Create post without token (401)",
+      "description": "Expected: UNAUTHORIZED. Intentionally sends no Authorization header.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/posts",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Unauthorized post\",\n  \"content\": \"This request should be rejected.\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": 200,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingMaxRedirects": 5
+    },
+    {
+      "_id": "req_update_post",
+      "_type": "request",
+      "parentId": "grp_protected_posts",
+      "name": "Update own post (200)",
+      "description": "Requires auth_token and an existing post_id. Sends a partial update.",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/api/posts/{{ _.post_id }}",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Updated from Insomnia\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.auth_token }}"
+      },
+      "metaSortKey": 300,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingMaxRedirects": 5
+    },
+    {
+      "_id": "req_update_post_empty",
+      "_type": "request",
+      "parentId": "grp_protected_posts",
+      "name": "Update post with empty body (400)",
+      "description": "Expected: VALIDATION_ERROR because at least one editable field is required.",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/api/posts/{{ _.post_id }}",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.auth_token }}"
+      },
+      "metaSortKey": 400,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingMaxRedirects": 5
+    },
+    {
+      "_id": "req_update_post_forbidden",
+      "_type": "request",
+      "parentId": "grp_protected_posts",
+      "name": "Update someone else's post (403)",
+      "description": "Requires other_token and a post_id owned by auth_token's user. Expected: FORBIDDEN.",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/api/posts/{{ _.post_id }}",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"This update must be forbidden\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.other_token }}"
+      },
+      "metaSortKey": 500,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingMaxRedirects": 5
+    },
+    {
+      "_id": "req_delete_post_forbidden",
+      "_type": "request",
+      "parentId": "grp_protected_posts",
+      "name": "Delete someone else's post (403)",
+      "description": "Requires other_token and a post_id owned by auth_token's user. Expected: FORBIDDEN.",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/api/posts/{{ _.post_id }}",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.other_token }}"
+      },
+      "metaSortKey": 600,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingMaxRedirects": 5
+    },
+    {
+      "_id": "req_delete_post",
+      "_type": "request",
+      "parentId": "grp_protected_posts",
+      "name": "Delete own post (204)",
+      "description": "Requires auth_token and post_id. Expected: empty response body with status 204.",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/api/posts/{{ _.post_id }}",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.auth_token }}"
+      },
+      "metaSortKey": 700,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingMaxRedirects": 5
+    },
+    {
+      "_id": "req_get_deleted_post",
+      "_type": "request",
+      "parentId": "grp_public_posts",
+      "name": "Get deleted post (404)",
+      "description": "Run after Delete own post. Expected: NOT_FOUND / Post not found.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/posts/{{ _.post_id }}",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 500,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingMaxRedirects": 5
+    }
+  ]
+}
