@@ -45,3 +45,10 @@ An importable Insomnia collection with requests for all endpoints and error case
 ## Database migrations
 
 Update `src/infrastructure/database/schema.ts`, generate a migration with `npm run db:generate`, and apply it with `npm run db:migrate`. Production containers run compiled migrations before starting the HTTP server.
+
+---
+<div align="center">
+
+**© 2026 Blog API** - *Made with ❤️ and ☕ by Álisson Romão Santos*
+
+</div>
